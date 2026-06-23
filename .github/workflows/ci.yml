@@ -44,8 +44,6 @@ jobs:
         with:
           nix-version: ${{ matrix.nix-version }}
           push-to-cache: false
-          cachix-cache: ${{ vars.CACHIX_CACHE }}
-          cachix-auth-token: ${{ secrets.CACHIX_AUTH_TOKEN }}
           trusted-public-keys: ${{ vars.TRUSTED_PUBLIC_KEYS }}
           substituters: ${{ vars.SUBSTITUTERS }}
           devshell: default
@@ -71,7 +69,7 @@ jobs:
             "aarch64-darwin"
           ]
         }
-      run-cachix-deploy: false
+      push-deployment-caches: false
 
   test-act:
     runs-on: [self-hosted, nixos, x86-64-v3, bare-metal]
@@ -83,8 +81,6 @@ jobs:
         uses: ./.github/setup-nix
         with:
           push-to-cache: true
-          cachix-cache: ${{ vars.CACHIX_CACHE }}
-          cachix-auth-token: ${{ secrets.CACHIX_AUTH_TOKEN }}
           trusted-public-keys: ${{ vars.TRUSTED_PUBLIC_KEYS }}
           substituters: ${{ vars.SUBSTITUTERS }}
           devshell: default
@@ -92,11 +88,16 @@ jobs:
       - name: Create `.gh-vars.env` and `.gh-secrets.env` files
         run: |
           {
-            echo 'CACHIX_CACHE=${{ vars.CACHIX_CACHE }}'
+            echo 'ATTIC_ENDPOINT=${{ vars.ATTIC_ENDPOINT }}'
+            echo 'ATTIC_CACHE=${{ vars.ATTIC_CACHE }}'
+            echo 'ATTIC_SUBSTITUTER=${{ vars.ATTIC_SUBSTITUTER }}'
+            echo 'ATTIC_TRUSTED_PUBLIC_KEY=${{ vars.ATTIC_TRUSTED_PUBLIC_KEY }}'
+            echo 'SUBSTITUTERS=${{ vars.SUBSTITUTERS }}'
+            echo 'TRUSTED_PUBLIC_KEYS=${{ vars.TRUSTED_PUBLIC_KEYS }}'
           } > .gh-vars.env
 
           {
-            echo 'CACHIX_AUTH_TOKEN=${{ secrets.CACHIX_AUTH_TOKEN }}'
+            echo 'ATTIC_TOKEN=${{ secrets.ATTIC_TOKEN }}'
           } > .gh-secrets.env
 
       - name: Build `ci-image` and run the `lint` workflow inside it with `act`
