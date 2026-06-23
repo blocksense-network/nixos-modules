@@ -22,12 +22,12 @@ act workflow_name="ci": image
   set -euo pipefail
   if [ ! -f .gh-vars.env ]; then
     echo "ERROR: .gh-vars.env not found"
-    echo "Create it with: echo 'CACHIX_CACHE=mcl-public-cache' > .gh-vars.env"
+    echo "Create it with ATTIC_* and trusted cache variables from GitHub Actions"
     exit 1
   fi
   if [ ! -f .gh-secrets.env ]; then
     echo "ERROR: .gh-secrets.env not found"
-    echo "Create it with your CACHIX_AUTH_TOKEN: echo 'CACHIX_AUTH_TOKEN=...' > .gh-secrets.env"
+    echo "Create it with your ATTIC_TOKEN"
     exit 1
   fi
 
